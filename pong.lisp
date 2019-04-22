@@ -3,12 +3,13 @@
 
 
 
-(defvar *canvas-width* 800)
+(defvar *canvas-width* 400)
 (defvar *canvas-height* 600)
 
 (defgame pong ()
   ((player1 :initform (make-instance 'player :position (vec2 240 20)))
    (player2 :initform (make-instance 'player :position (vec2 240 560)))
+   (ball :initform (make-instance 'ball :position (vec2 (- (/ *canvas-width* 2) 5) (- (/ *canvas-height* 2) 5))))
    (last-updated :initform 0))
   (:viewport-width *canvas-width*)
   (:viewport-height *canvas-height*)
@@ -27,20 +28,26 @@
     (bind-button :d :pressed (lambda () (setf (moving-right-p player2) t)))
     (bind-button :d :released (lambda () (setf (moving-right-p player2) nil)))))
 
+
+
 (defvar *black* (vec4 0 0 0 1))
 
 (defmethod draw ((app pong))
-  (with-slots (player1 player2) app
+  (with-slots (player1 player2 ball) app
     (draw-rect (position-of player1) (x (size-of player1)) (y (size-of player1)) :fill-paint (color-of player1))
-    (draw-rect (position-of player2) (x (size-of player2)) (y (size-of player2)) :fill-paint (color-of player2))))
+    (draw-rect (position-of player2) (x (size-of player2)) (y (size-of player2)) :fill-paint (color-of player2))
+    (draw-rect (position-of ball) (x (size-of ball)) (y (size-of ball)) :fill-paint (color-of ball))))
 
 (defmethod act ((app pong))
-  (with-slots (player1 player2 last-updated) app
+  (with-slots (player1 player2 ball last-updated) app
     (let* ((current-time (real-time-seconds))
 	   (delta-time (- current-time last-updated)))
       (update-player player1 delta-time)
       (update-player player2 delta-time)
+      (update-ball ball delta-time player1 player2)
       (setf last-updated current-time))))
+
+
 
 (defun move (player direction delta-time)
   (let ((real-speed (* (speed-of player) delta-time)))
@@ -54,3 +61,95 @@
   (cond
     ((moving-left-p player) (move player 'left delta-time))
     ((moving-right-p player) (move player 'right delta-time))))
+
+
+
+(defvar *player1-score* 0)
+(defvar *player2-score* 0)
+
+(defun score (player ball)
+  (if (eql player 'player1)
+      (incf *player1-score*)
+      (incf *player2-score*))
+  (setf (position-of ball) (vec2 (- (/ *canvas-width* 2) 5) (- (/ *canvas-height* 2) 5))))
+
+
+
+(defun update-ball (ball delta-time player1 player2)
+  (cond
+    ;; Check for score
+    ((<= (y (position-of ball)) 0) (score 'player2 ball))
+    ((>= (y (position-of ball)) 610) (score 'player1 ball))
+    ;;; Check collision with walls
+    ((<= (x (position-of ball)) 0)
+     (setf (moving-left-p ball) nil))
+    ((>=
+      (+ (x (position-of ball)) (x (size-of ball)))
+      *canvas-width*)
+     (setf (moving-left-p ball) t))
+    ;;; Check collision with players
+    ((colliding-with-player1-p ball player1)
+     (setf (moving-down-p ball) nil))
+    ((colliding-with-player2-p ball player2)
+     (setf (moving-down-p ball) t)))
+  (move-ball ball delta-time))
+
+
+
+(defun colliding-with-player1-p (ball player1)
+  (if
+   (<=
+    (y (position-of ball))
+    (+ (y (position-of player1)) (y (size-of player1))))
+  ;; Ball y is inside
+   (cond 
+     ((and
+       (<=
+	(x (position-of ball))
+	(+ (x (position-of player1)) (x (size-of player1))))
+       (>=
+	(+ (x (position-of ball)) (x (size-of ball)))
+	(x (position-of player1)))) t))
+   nil))
+
+
+
+(defun colliding-with-player2-p (ball player2)
+  (if
+   (>=
+    (+ (y (position-of ball)) (y (size-of ball)))
+    (y (position-of player2)))
+   ;; Ball y is inside
+   (cond 
+     ((and
+       (<=
+	(x (position-of ball))
+	(+ (x (position-of player2)) (x (size-of player2))))
+       (>=
+	(+ (x (position-of ball)) (x (size-of ball)))
+	(x (position-of player2)))) t))
+   nil))
+
+
+
+(defun move-ball (ball delta-time)
+  (let ((real-speed 3))
+    (if
+     (moving-down-p ball)
+     (if
+      (moving-left-p ball)
+      (setf
+       (x (position-of ball)) (- (x (position-of ball)) real-speed)
+       (y (position-of ball)) (- (y (position-of ball)) real-speed))
+      (setf
+       (x (position-of ball)) (+ (x (position-of ball)) real-speed)
+       (y (position-of ball)) (- (y (position-of ball)) real-speed)))
+     (if
+      (moving-left-p ball)
+      (setf
+       (x (position-of ball)) (- (x (position-of ball)) real-speed)
+       (y (position-of ball)) (+ (y (position-of ball)) real-speed))
+      (setf
+       (x (position-of ball)) (+ (x (position-of ball)) real-speed)
+       (y (position-of ball)) (+ (y (position-of ball)) real-speed))))))
+

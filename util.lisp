@@ -32,3 +32,19 @@
    (speed :initform 500 :accessor speed-of)
    (moving-left-p :initform nil :accessor moving-left-p)
    (moving-right-p :initform nil :accessor moving-right-p)))
+
+;;; Ball
+(defclass ball (positionable)
+  ((color
+    :initarg :color
+    :accessor color-of
+    :initform (vec4 0.0 0.0 0.0 1))
+   (size
+    :initarg :size
+    :accessor size-of
+    :initform (vec2 10 10))
+   (speed :initform 50 :accessor speed-of)
+   ;; The ball is always moving in one direction or another
+   (moving-left-p :initform nil :accessor moving-left-p)
+   (moving-down-p :initform nil :accessor moving-down-p)))
+   
