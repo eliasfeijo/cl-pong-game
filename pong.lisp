@@ -10,16 +10,22 @@
 (defparameter *player2-score* 0)
 
 (defgame pong ()
-  ((player1 :initform (make-instance 'player :position (vec2 240 20)))
-   (player2 :initform (make-instance 'player :position (vec2 240 560)))
-   (ball :initform (make-instance 'ball :position (vec2 (- (/ *canvas-width* 2) 5) (- (/ *canvas-height* 2) 5))))
-   (last-updated :initform 0))
+  ((player1 :initform (make-instance 'player))
+   (player2 :initform (make-instance 'player))
+   (ball :initform (make-instance 'ball))
+   (last-updated :initform (real-time-seconds)))
   (:viewport-width *canvas-width*)
   (:viewport-height *canvas-height*)
   (:viewport-title "Pong"))
 
 (defmethod post-initialize :after ((app pong))
-  (with-slots (player1 player2) app
+  (with-slots (player1 player2 ball) app
+    (setf
+     *player1-score* 0
+     *player2-score* 0
+     (position-of player1) (vec2 (- (/ *canvas-width* 2) (/ (x (size-of player1)) 2)) (+ (y (size-of player1)) 20))
+     (position-of player2) (vec2 (- (/ *canvas-width* 2) (/ (x (size-of player2)) 2)) (- *canvas-height* (+ (y (size-of player2)) 30)))
+     (position-of ball) (vec2 (- (/ *canvas-width* 2) 5) (- (/ *canvas-height* 2) 5)))
     ;;; Player 1
     (bind-button :left :pressed (lambda () (setf (moving-left-p player1) t)))
     (bind-button :left :released (lambda () (setf (moving-left-p player1) nil)))
@@ -75,8 +81,8 @@
       (incf *player2-score*))
   (setf
    (position-of ball) (vec2 (- (/ *canvas-width* 2) 5) (- (/ *canvas-height* 2) 5))
-   (moving-down-p ball) (eql (random 2) 1))
-   (moving-left-p ball) (eql (random 2) 1))
+   (moving-down-p ball) (eql (random 2) 1)
+   (moving-left-p ball) (eql (random 2) 1)))
 
 
 
@@ -84,7 +90,7 @@
   (cond
     ;; Check for score
     ((<= (y (position-of ball)) 0) (score 'player2 ball))
-    ((>= (y (position-of ball)) 610) (score 'player1 ball))
+    ((>= (y (position-of ball)) (+ *canvas-height* (/ (y (size-of ball)) 2))) (score 'player1 ball))
     ;;; Check collision with walls
     ((<= (x (position-of ball)) 0)
      (setf (moving-left-p ball) nil))
