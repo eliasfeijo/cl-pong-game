@@ -90,47 +90,32 @@
       *canvas-width*)
      (setf (moving-left-p ball) t))
     ;;; Check collision with players
-    ((colliding-with-player1-p ball player1)
+    ((colliding-with ball player1)
      (setf (moving-down-p ball) nil))
-    ((colliding-with-player2-p ball player2)
+    ((colliding-with ball player2)
      (setf (moving-down-p ball) t)))
   (move-ball ball delta-time))
 
 
 
-(defun colliding-with-player1-p (ball player1)
+(defun colliding-with (ball player)
   (if
-   (<=
-    (y (position-of ball))
-    (+ (y (position-of player1)) (y (size-of player1))))
-  ;; Ball y is inside
-   (cond 
-     ((and
-       (<=
-	(x (position-of ball))
-	(+ (x (position-of player1)) (x (size-of player1))))
-       (>=
-	(+ (x (position-of ball)) (x (size-of ball)))
-	(x (position-of player1)))) t))
-   nil))
-
-
-
-(defun colliding-with-player2-p (ball player2)
-  (if
-   (>=
-    (+ (y (position-of ball)) (y (size-of ball)))
-    (y (position-of player2)))
+   (and
+    (<=
+     (y (position-of ball))
+     (+ (y (position-of player)) (y (size-of player))))
+    (>=
+     (+ (y (position-of ball)) (y (size-of ball)))
+     (y (position-of player))))
    ;; Ball y is inside
    (cond 
      ((and
        (<=
 	(x (position-of ball))
-	(+ (x (position-of player2)) (x (size-of player2))))
+	(+ (x (position-of player)) (x (size-of player))))
        (>=
 	(+ (x (position-of ball)) (x (size-of ball)))
-	(x (position-of player2)))) t))
-   nil))
+	(x (position-of player)))) t)) nil))
 
 
 
