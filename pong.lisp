@@ -6,6 +6,9 @@
 (defvar *canvas-width* 400)
 (defvar *canvas-height* 600)
 
+(defparameter *player1-score* 0)
+(defparameter *player2-score* 0)
+
 (defgame pong ()
   ((player1 :initform (make-instance 'player :position (vec2 240 20)))
    (player2 :initform (make-instance 'player :position (vec2 240 560)))
@@ -66,14 +69,14 @@
 
 
 
-(defparameter *player1-score* 0)
-(defparameter *player2-score* 0)
-
 (defun score (player ball)
   (if (eql player 'player1)
       (incf *player1-score*)
       (incf *player2-score*))
-  (setf (position-of ball) (vec2 (- (/ *canvas-width* 2) 5) (- (/ *canvas-height* 2) 5))))
+  (setf
+   (position-of ball) (vec2 (- (/ *canvas-width* 2) 5) (- (/ *canvas-height* 2) 5))
+   (moving-down-p ball) (eql (random 2) 1))
+   (moving-left-p ball) (eql (random 2) 1))
 
 
 
