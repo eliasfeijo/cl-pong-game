@@ -26,7 +26,7 @@
      (position-of player1) (vec2 (- (/ *canvas-width* 2) (/ (x (size-of player1)) 2)) (+ (y (size-of player1)) 20))
      (position-of player2) (vec2 (- (/ *canvas-width* 2) (/ (x (size-of player2)) 2)) (- *canvas-height* (+ (y (size-of player2)) 30)))
      (position-of ball) (vec2 (- (/ *canvas-width* 2) 5) (- (/ *canvas-height* 2) 5)))
-    (bind-button :esc :pressed #'stop)
+    (bind-button :escape :pressed #'stop)
     ;;; Player 1
     (bind-button :left :pressed (lambda () (setf (moving-left-p player1) t)))
     (bind-button :left :released (lambda () (setf (moving-left-p player1) nil)))
