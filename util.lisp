@@ -43,7 +43,7 @@
     :initarg :size
     :accessor size-of
     :initform (vec2 10 10))
-   (speed :initform 50 :accessor speed-of)
+   (speed :initform 300 :accessor speed-of)
    ;; The ball is always moving in one direction or another
    (moving-left-p :initform nil :accessor moving-left-p)
    (moving-down-p :initform nil :accessor moving-down-p)))

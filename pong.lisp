@@ -120,7 +120,7 @@
 
 
 (defun move-ball (ball delta-time)
-  (let ((real-speed 3))
+  (let ((real-speed (* (speed-of ball) delta-time)))
     (if
      (moving-down-p ball)
      (if
