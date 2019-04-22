@@ -36,7 +36,9 @@
   (with-slots (player1 player2 ball) app
     (draw-rect (position-of player1) (x (size-of player1)) (y (size-of player1)) :fill-paint (color-of player1))
     (draw-rect (position-of player2) (x (size-of player2)) (y (size-of player2)) :fill-paint (color-of player2))
-    (draw-rect (position-of ball) (x (size-of ball)) (y (size-of ball)) :fill-paint (color-of ball))))
+    (draw-rect (position-of ball) (x (size-of ball)) (y (size-of ball)) :fill-paint (color-of ball)))
+  (draw-text (write-to-string *player1-score*) (vec2 20 20))
+  (draw-text (write-to-string *player2-score*) (vec2 20 580)))
 
 (defmethod act ((app pong))
   (with-slots (player1 player2 ball last-updated) app
@@ -64,8 +66,8 @@
 
 
 
-(defvar *player1-score* 0)
-(defvar *player2-score* 0)
+(defparameter *player1-score* 0)
+(defparameter *player2-score* 0)
 
 (defun score (player ball)
   (if (eql player 'player1)
