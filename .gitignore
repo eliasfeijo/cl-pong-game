@@ -1,3 +1,9 @@
+# Emacs junk
 *~
 \#*\#
+
+# Lisp junk
 *.fasl
+
+# build
+build/*
