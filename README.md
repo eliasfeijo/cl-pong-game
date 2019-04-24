@@ -26,6 +26,6 @@ Run
 
 ### Controls
 
-Player 1: up and down keys
+Player 1: W and S keys
 
-Player 2: W and S keys
+Player 2: up and down keys

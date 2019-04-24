@@ -24,19 +24,19 @@
      *player1-score* 0
      *player2-score* 0
      (position-of player1) (vec2 (+ (x (size-of player1)) 20) (- (/ *canvas-height* 2) (/ (y (size-of player1)) 2)))
-     (position-of player2) (vec2 (- *canvas-width* (+ (x (size-of player2)) 20))  (- (/ *canvas-height* 2) (/ (y (size-of player2)) 2)))
+     (position-of player2) (vec2 (- *canvas-width* (+ (x (size-of player2)) 40))  (- (/ *canvas-height* 2) (/ (y (size-of player2)) 2)))
      (position-of ball) (vec2 (- (/ *canvas-width* 2) 5) (- (/ *canvas-height* 2) 5)))
     (bind-button :escape :pressed #'stop)
     ;;; Player 1
-    (bind-button :down :pressed (lambda () (setf (moving-down-p player1) t)))
-    (bind-button :down :released (lambda () (setf (moving-down-p player1) nil)))
-    (bind-button :up :pressed (lambda () (setf (moving-up-p player1) t)))
-    (bind-button :up :released (lambda () (setf (moving-up-p player1) nil)))
+    (bind-button :s :pressed (lambda () (setf (moving-down-p player1) t)))
+    (bind-button :s :released (lambda () (setf (moving-down-p player1) nil)))
+    (bind-button :w :pressed (lambda () (setf (moving-up-p player1) t)))
+    (bind-button :w :released (lambda () (setf (moving-up-p player1) nil)))
     ;;; Player 2
-    (bind-button :s :pressed (lambda () (setf (moving-down-p player2) t)))
-    (bind-button :s :released (lambda () (setf (moving-down-p player2) nil)))
-    (bind-button :w :pressed (lambda () (setf (moving-up-p player2) t)))
-    (bind-button :w :released (lambda () (setf (moving-up-p player2) nil)))))
+    (bind-button :down :pressed (lambda () (setf (moving-down-p player2) t)))
+    (bind-button :down :released (lambda () (setf (moving-down-p player2) nil)))
+    (bind-button :up :pressed (lambda () (setf (moving-up-p player2) t)))
+    (bind-button :up :released (lambda () (setf (moving-up-p player2) nil)))))
 
 
 
@@ -47,8 +47,8 @@
     (draw-rect (position-of player1) (x (size-of player1)) (y (size-of player1)) :fill-paint (color-of player1))
     (draw-rect (position-of player2) (x (size-of player2)) (y (size-of player2)) :fill-paint (color-of player2))
     (draw-rect (position-of ball) (x (size-of ball)) (y (size-of ball)) :fill-paint (color-of ball)))
-  (draw-text (write-to-string *player1-score*) (vec2 20 20))
-  (draw-text (write-to-string *player2-score*) (vec2 20 580)))
+  (draw-text (write-to-string *player1-score*) (vec2 20 580))
+  (draw-text (write-to-string *player2-score*) (vec2 780 580)))
 
 (defmethod act ((app pong))
   (with-slots (player1 player2 ball last-updated) app
