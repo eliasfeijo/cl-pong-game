@@ -4,9 +4,17 @@
 (defvar *canvas-width* 800)
 (defvar *canvas-height* 600)
 
+(defvar *black* (vec4 0 0 0 1))
+
 ;; Elapsed time in seconds
 (defun real-time-seconds ()
   (/ (get-internal-real-time) internal-time-units-per-second))
+
+;;; Rendering
+(defgeneric render (object)
+  (:method (object) (declare (ignore object))))
+
+(defclass renderable () ())
 
 ;;; Position
 (defgeneric (setf position-of) (vec2 positionable))
@@ -51,3 +59,11 @@
    (moving-left-p :initform nil :accessor moving-left-p)
    (moving-down-p :initform nil :accessor moving-down-p)))
    
+
+;;; Keyboard
+
+(defgeneric press-key (keyboard key)
+  (:method (keyboard key)))
+
+(defgeneric release-key (keyboard key)
+  (:method (keyboard key)))
