@@ -8,5 +8,6 @@
   :components ((:file "packages")
 	       (:file "util")
 	       (:file "player")
+	       (:file "ball")
 	       (:file "state")
 	       (:file "pong")))

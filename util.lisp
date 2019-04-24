@@ -28,23 +28,7 @@
 (defmethod (setf position-of) ((vec vec2) (this positionable))
   (setf (x (position-of this)) (x vec)
 	(y (position-of this)) (y vec))
-  (position-of this))
-
-;;; Ball
-(defclass ball (positionable)
-  ((color
-    :initarg :color
-    :accessor color-of
-    :initform (vec4 0.0 0.0 0.0 1))
-   (size
-    :initarg :size
-    :accessor size-of
-    :initform (vec2 10 10))
-   (speed :initform 300 :accessor speed-of)
-   ;; The ball is always moving in one direction or another
-   (moving-left-p :initform nil :accessor moving-left-p)
-   (moving-down-p :initform nil :accessor moving-down-p)))
-   
+  (position-of this))   
 
 ;;; Keyboard
 
