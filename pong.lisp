@@ -112,20 +112,20 @@
   (if
    (and
     (<=
-     (y (position-of ball))
-     (+ (y (position-of player)) (y (size-of player))))
+     (x (position-of ball))
+     (+ (x (position-of player)) (x (size-of player))))
     (>=
-     (+ (y (position-of ball)) (y (size-of ball)))
-     (y (position-of player))))
-   ;; Ball y is inside
+     (+ (x (position-of ball)) (x (size-of ball)))
+     (x (position-of player))))
+   ;; Ball x is inside
    (cond 
      ((and
        (<=
-	(x (position-of ball))
-	(+ (x (position-of player)) (x (size-of player))))
+	(y (position-of ball))
+	(+ (y (position-of player)) (y (size-of player))))
        (>=
-	(+ (x (position-of ball)) (x (size-of ball)))
-	(x (position-of player)))) t)) nil))
+	(+ (y (position-of ball)) (y (size-of ball)))
+	(y (position-of player)))) t)) nil))
 
 
 
