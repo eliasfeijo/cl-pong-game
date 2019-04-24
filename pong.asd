@@ -7,5 +7,6 @@
   :serial t
   :components ((:file "packages")
 	       (:file "util")
+	       (:file "player")
 	       (:file "state")
 	       (:file "pong")))

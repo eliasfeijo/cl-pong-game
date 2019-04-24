@@ -30,20 +30,6 @@
 	(y (position-of this)) (y vec))
   (position-of this))
 
-;;; Player
-(defclass player (positionable)
-  ((color
-    :initarg :color
-    :accessor color-of
-    :initform (vec4 0.0 0.0 0.0 1))
-   (size
-    :initarg :size
-    :accessor size-of
-    :initform (vec2 20 100))
-   (speed :initform 500 :accessor speed-of)
-   (moving-up-p :initform nil :accessor moving-up-p)
-   (moving-down-p :initform nil :accessor moving-down-p)))
-
 ;;; Ball
 (defclass ball (positionable)
   ((color

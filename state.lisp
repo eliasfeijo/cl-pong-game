@@ -54,8 +54,8 @@
 
 (defmethod render ((this game))
   (with-slots (player1 player2 ball) this
-    (draw-rect (position-of player1) (x (size-of player1)) (y (size-of player1)) :fill-paint (color-of player1))
-    (draw-rect (position-of player2) (x (size-of player2)) (y (size-of player2)) :fill-paint (color-of player2))
+    (render player1)
+    (render player2)
     (draw-rect (position-of ball) (x (size-of ball)) (y (size-of ball)) :fill-paint (color-of ball)))
   (draw-text (write-to-string *player1-score*) (vec2 20 580))
   (draw-text (write-to-string *player2-score*) (vec2 780 580)))
@@ -72,21 +72,6 @@
 
 
 ;;; Game logic
-
-(defun move (player direction delta-time)
-  (let ((real-speed (* (speed-of player) delta-time)))
-    (case direction
-      (down
-       (setf (y (position-of player)) (- (y (position-of player)) real-speed)))
-      (up
-       (setf (y (position-of player)) (+ (y (position-of player)) real-speed))))))
-
-(defun update-player (player delta-time)
-  (cond
-    ((moving-down-p player) (move player 'down delta-time))
-    ((moving-up-p player) (move player 'up delta-time))))
-
-
 
 (defun score (player ball)
   (if (eql player 'player1)
