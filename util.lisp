@@ -1,6 +1,9 @@
 ;;;; utils.lisp
 (in-package :com.eliasfeijo.pong)
 
+(defvar *canvas-width* 800)
+(defvar *canvas-height* 600)
+
 ;; Elapsed time in seconds
 (defun real-time-seconds ()
   (/ (get-internal-real-time) internal-time-units-per-second))
