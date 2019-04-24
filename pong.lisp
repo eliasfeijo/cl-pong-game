@@ -3,7 +3,7 @@
 
 
 
-(defvar *canvas-width* 400)
+(defvar *canvas-width* 800)
 (defvar *canvas-height* 600)
 
 (defparameter *player1-score* 0)
@@ -23,20 +23,20 @@
     (setf
      *player1-score* 0
      *player2-score* 0
-     (position-of player1) (vec2 (- (/ *canvas-width* 2) (/ (x (size-of player1)) 2)) (+ (y (size-of player1)) 20))
-     (position-of player2) (vec2 (- (/ *canvas-width* 2) (/ (x (size-of player2)) 2)) (- *canvas-height* (+ (y (size-of player2)) 30)))
+     (position-of player1) (vec2 (+ (x (size-of player1)) 20) (- (/ *canvas-height* 2) (/ (y (size-of player1)) 2)))
+     (position-of player2) (vec2 (- *canvas-width* (+ (x (size-of player2)) 20))  (- (/ *canvas-height* 2) (/ (y (size-of player2)) 2)))
      (position-of ball) (vec2 (- (/ *canvas-width* 2) 5) (- (/ *canvas-height* 2) 5)))
     (bind-button :escape :pressed #'stop)
     ;;; Player 1
-    (bind-button :left :pressed (lambda () (setf (moving-left-p player1) t)))
-    (bind-button :left :released (lambda () (setf (moving-left-p player1) nil)))
-    (bind-button :right :pressed (lambda () (setf (moving-right-p player1) t)))
-    (bind-button :right :released (lambda () (setf (moving-right-p player1) nil)))
+    (bind-button :down :pressed (lambda () (setf (moving-down-p player1) t)))
+    (bind-button :down :released (lambda () (setf (moving-down-p player1) nil)))
+    (bind-button :up :pressed (lambda () (setf (moving-up-p player1) t)))
+    (bind-button :up :released (lambda () (setf (moving-up-p player1) nil)))
     ;;; Player 2
-    (bind-button :a :pressed (lambda () (setf (moving-left-p player2) t)))
-    (bind-button :a :released (lambda () (setf (moving-left-p player2) nil)))
-    (bind-button :d :pressed (lambda () (setf (moving-right-p player2) t)))
-    (bind-button :d :released (lambda () (setf (moving-right-p player2) nil)))))
+    (bind-button :s :pressed (lambda () (setf (moving-down-p player2) t)))
+    (bind-button :s :released (lambda () (setf (moving-down-p player2) nil)))
+    (bind-button :w :pressed (lambda () (setf (moving-up-p player2) t)))
+    (bind-button :w :released (lambda () (setf (moving-up-p player2) nil)))))
 
 
 
@@ -64,15 +64,15 @@
 (defun move (player direction delta-time)
   (let ((real-speed (* (speed-of player) delta-time)))
     (case direction
-      (left
-       (setf (x (position-of player)) (- (x (position-of player)) real-speed)))
-      (right
-       (setf (x (position-of player)) (+ (x (position-of player)) real-speed))))))
+      (down
+       (setf (y (position-of player)) (- (y (position-of player)) real-speed)))
+      (up
+       (setf (y (position-of player)) (+ (y (position-of player)) real-speed))))))
 
 (defun update-player (player delta-time)
   (cond
-    ((moving-left-p player) (move player 'left delta-time))
-    ((moving-right-p player) (move player 'right delta-time))))
+    ((moving-down-p player) (move player 'down delta-time))
+    ((moving-up-p player) (move player 'up delta-time))))
 
 
 
@@ -90,20 +90,20 @@
 (defun update-ball (ball delta-time player1 player2)
   (cond
     ;; Check for score
-    ((<= (y (position-of ball)) 0) (score 'player2 ball))
-    ((>= (y (position-of ball)) (+ *canvas-height* (/ (y (size-of ball)) 2))) (score 'player1 ball))
+    ((<= (x (position-of ball)) 0) (score 'player2 ball))
+    ((>= (x (position-of ball)) (+ *canvas-width* (x (size-of ball)))) (score 'player1 ball))
     ;;; Check collision with walls
-    ((<= (x (position-of ball)) 0)
-     (setf (moving-left-p ball) nil))
+    ((<= (y (position-of ball)) 0)
+     (setf (moving-down-p ball) nil))
     ((>=
-      (+ (x (position-of ball)) (x (size-of ball)))
-      *canvas-width*)
-     (setf (moving-left-p ball) t))
+      (+ (y (position-of ball)) (y (size-of ball)))
+      *canvas-height*)
+     (setf (moving-down-p ball) t))
     ;;; Check collision with players
     ((colliding-with ball player1)
-     (setf (moving-down-p ball) nil))
+     (setf (moving-left-p ball) nil))
     ((colliding-with ball player2)
-     (setf (moving-down-p ball) t)))
+     (setf (moving-left-p ball) t)))
   (move-ball ball delta-time))
 
 

@@ -28,10 +28,10 @@
    (size
     :initarg :size
     :accessor size-of
-    :initform (vec2 100 20))
+    :initform (vec2 20 100))
    (speed :initform 500 :accessor speed-of)
-   (moving-left-p :initform nil :accessor moving-left-p)
-   (moving-right-p :initform nil :accessor moving-right-p)))
+   (moving-up-p :initform nil :accessor moving-up-p)
+   (moving-down-p :initform nil :accessor moving-down-p)))
 
 ;;; Ball
 (defclass ball (positionable)
