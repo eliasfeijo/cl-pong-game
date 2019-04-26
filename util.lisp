@@ -5,6 +5,7 @@
 (defvar *canvas-height* 600)
 
 (defvar *black* (vec4 0 0 0 1))
+(defvar *white* (vec4 255 255 255 1))
 
 ;; Elapsed time in seconds
 (defun real-time-seconds ()
