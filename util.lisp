@@ -74,3 +74,25 @@
 		  :name "Blue"
 		  :description "Increases the ball's speed."
 		  :value (vec4 0 0 255 1))))
+
+
+
+;;; Collision
+(defun colliding-with (origin target)
+  (if
+   (and
+    (<=
+     (x (position-of origin))
+     (+ (x (position-of target)) (x (size-of target))))
+    (>=
+     (+ (x (position-of origin)) (x (size-of origin)))
+     (x (position-of target))))
+   ;; Ball x is inside
+   (cond 
+     ((and
+       (<=
+	(y (position-of origin))
+	(+ (y (position-of target)) (y (size-of target))))
+       (>=
+	(+ (y (position-of origin)) (y (size-of origin)))
+	(y (position-of target)))) t)) nil))

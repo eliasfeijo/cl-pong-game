@@ -50,27 +50,6 @@
 
 
 
-(defun colliding-with (ball player)
-  (if
-   (and
-    (<=
-     (x (position-of ball))
-     (+ (x (position-of player)) (x (size-of player))))
-    (>=
-     (+ (x (position-of ball)) (x (size-of ball)))
-     (x (position-of player))))
-   ;; Ball x is inside
-   (cond 
-     ((and
-       (<=
-	(y (position-of ball))
-	(+ (y (position-of player)) (y (size-of player))))
-       (>=
-	(+ (y (position-of ball)) (y (size-of ball)))
-	(y (position-of player)))) t)) nil))
-
-
-
 (defun move-ball (ball delta-time)
   (let ((real-speed (* (speed-of ball) delta-time)))
     (if
