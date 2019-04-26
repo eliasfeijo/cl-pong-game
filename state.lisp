@@ -91,8 +91,8 @@
 (defmethod act ((this color-selection))
   (with-slots (p1-confirmed-p p2-confirmed-p p1-cursor p2-cursor start-callback) this
     (if (and p1-confirmed-p p2-confirmed-p)
-	(let ((p1-color (value-of (elt *list-color* p1-cursor)))
-	      (p2-color (value-of (elt *list-color* p2-cursor))))
+	(let ((p1-color (elt *list-color* p1-cursor))
+	      (p2-color (elt *list-color* p2-cursor)))
 	  (funcall start-callback :player1-color p1-color :player2-color p2-color)))))
 
 

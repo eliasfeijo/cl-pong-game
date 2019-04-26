@@ -5,7 +5,7 @@
   ((color
     :initarg :color
     :accessor color-of
-    :initform (vec4 0.0 0.0 0.0 1))
+    :initform nil)
    (size
     :initarg :size
     :accessor size-of
@@ -28,4 +28,4 @@
     ((moving-up-p player) (move player 'up delta-time))))
 
 (defmethod render ((this player))
-  (draw-rect (position-of this) (x (size-of this)) (y (size-of this)) :fill-paint (color-of this)))
+  (draw-rect (position-of this) (x (size-of this)) (y (size-of this)) :fill-paint (value-of (color-of this))))
