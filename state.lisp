@@ -15,52 +15,48 @@
 
 (defclass color-selection (game-state)
   ((p1-cursor :initform 0)
-   (p2-cursor :initform 0)))
-
-(defclass color ()
-  ((name :initarg :name :accessor name-of)
-   (description :initarg :description :accessor description-of)
-   (value :initform (vec4 0 0 0 1) :initarg :value :accessor value-of)))
-
-(defparameter *list-color*
-  (list
-   (make-instance 'color
-		  :name "Red"
-		  :description "Burn your foe!"
-		  :value (vec4 255 0 0 1))
-   (make-instance 'color
-		  :name "Green"
-		  :description "Slow down your foe!"
-		  :value (vec4 0 255 0 1))
-   (make-instance 'color
-		  :name "Blue"
-		  :description "Increases the ball's speed."
-		  :value (vec4 0 0 255 1))))
-		  
+   (p2-cursor :initform 0)
+   (p1-confirmed-p :initform nil)
+   (p2-confirmed-p :initform nil)))
 
 (defmethod press-key ((this color-selection) key)
-  (with-slots (p1-cursor p2-cursor) this
+  (with-slots (p1-cursor p2-cursor p1-confirmed-p p2-confirmed-p) this
     (cond
+      ;;; Player 1
       ((eql key :w)
        (cond
-	 ((> p1-cursor 0)
+	 ((and
+	   (> p1-cursor 0)
+	   (null p1-confirmed-p))
 	  (setf p1-cursor (decf p1-cursor)))))
       ((eql key :s)
        (cond
-	 ((< p1-cursor (- (length *list-color*) 1))
+	 ((and
+	   (< p1-cursor (- (length *list-color*) 1))
+	   (null p1-confirmed-p))
 	  (setf p1-cursor (incf p1-cursor)))))
+      ((eql key :space)
+       (setf p1-confirmed-p t))
+      ;;; Player 2
       ((eql key :up)
        (cond
-	 ((> p2-cursor 0)
+	 ((and
+	   (> p2-cursor 0)
+	   (null p2-confirmed-p))
 	  (setf p2-cursor (decf p2-cursor)))))
       ((eql key :down)
        (cond
-	 ((< p2-cursor (- (length *list-color*) 1))
-	  (setf p2-cursor (incf p2-cursor))))))))
-       
+	 ((and
+	   (< p2-cursor (- (length *list-color*) 1))
+	   (null p2-confirmed-p))
+	  (setf p2-cursor (incf p2-cursor)))))
+      ((eql key :enter)
+       (setf p2-confirmed-p t)))))
+
+
 
 (defmethod render ((this color-selection))
-  (with-slots (p1-cursor p2-cursor) this
+  (with-slots (p1-cursor p2-cursor p1-confirmed-p p2-confirmed-p) this
     (draw-rect (vec2 (/ *canvas-width* 2) 0) 1 (- *canvas-height* 50) :fill-paint *black*)
     (draw-text "Select your color" (vec2 (- (/ *canvas-width* 2) 50) (- *canvas-height* 30)))
     ;;; Player 1
@@ -73,6 +69,7 @@
        do (draw-text text (vec2 50 (- 480 (* 15 i)))))
     (draw-text (description-of (elt *list-color* p1-cursor)) (vec2 50 400) :fill-color (value-of (elt *list-color* p1-cursor)))
     (draw-text "Press space to confirm." (vec2 50 350))
+    (if p1-confirmed-p (draw-text "Confirmed." (vec2 50 330)))
     ;;; Player 2
     (draw-text "Player 2 (Up and Down):" (vec2 450 500))
     (loop
@@ -82,7 +79,8 @@
        then (concat-cursor p2-cursor (- i 1) item)
        do (draw-text text (vec2 450 (- 480 (* 15 i)))))
     (draw-text (description-of (elt *list-color* p2-cursor)) (vec2 450 400) :fill-color (value-of (elt *list-color* p2-cursor)))
-    (draw-text "Press enter to confirm." (vec2 450 350))))
+    (draw-text "Press enter to confirm." (vec2 450 350))
+    (if p2-confirmed-p (draw-text "Confirmed." (vec2 450 330)))))
 
 (defun concat-cursor (cursor idx item)
   (if (eql cursor idx)

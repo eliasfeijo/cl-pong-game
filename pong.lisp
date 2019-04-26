@@ -21,8 +21,10 @@
 			      (release-key game-state button)))))
       (%bind-button :w)
       (%bind-button :s)
+      (%bind-button :space)
       (%bind-button :up)
-      (%bind-button :down))
+      (%bind-button :down)
+      (%bind-button :enter))
     (bind-button :escape :pressed #'stop)))
 
 
