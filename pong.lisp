@@ -11,8 +11,10 @@
 
 (defmethod post-initialize :after ((app pong))
   (with-slots (game-state) app
-    (labels ((start-game ()
-	       (setf game-state (make-instance 'game))))
+    (labels ((start-game (&key player1-color player2-color)
+	       (setf game-state (make-instance 'game))
+	       (setf (color-of (player1-of game-state)) player1-color)
+	       (setf (color-of (player2-of game-state)) player2-color)))
       (setf game-state (make-instance 'color-selection :start #'start-game)))
 	       
     (labels ((%bind-button (button)
