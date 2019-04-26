@@ -17,7 +17,8 @@
   ((p1-cursor :initform 0)
    (p2-cursor :initform 0)
    (p1-confirmed-p :initform nil)
-   (p2-confirmed-p :initform nil)))
+   (p2-confirmed-p :initform nil)
+   (start-callback :initarg :start)))
 
 (defmethod press-key ((this color-selection) key)
   (with-slots (p1-cursor p2-cursor p1-confirmed-p p2-confirmed-p) this
@@ -69,7 +70,7 @@
        do (draw-text text (vec2 50 (- 480 (* 15 i)))))
     (draw-text (description-of (elt *list-color* p1-cursor)) (vec2 50 400) :fill-color (value-of (elt *list-color* p1-cursor)))
     (draw-text "Press space to confirm." (vec2 50 350))
-    (if p1-confirmed-p (draw-text "Confirmed." (vec2 50 330)))
+    (if p1-confirmed-p (draw-text "Confirmed." (vec2 50 330) :fill-color (vec4 0 0.5 0 1)))
     ;;; Player 2
     (draw-text "Player 2 (Up and Down):" (vec2 450 500))
     (loop
@@ -80,12 +81,17 @@
        do (draw-text text (vec2 450 (- 480 (* 15 i)))))
     (draw-text (description-of (elt *list-color* p2-cursor)) (vec2 450 400) :fill-color (value-of (elt *list-color* p2-cursor)))
     (draw-text "Press enter to confirm." (vec2 450 350))
-    (if p2-confirmed-p (draw-text "Confirmed." (vec2 450 330)))))
+    (if p2-confirmed-p (draw-text "Confirmed." (vec2 450 330) :fill-color (vec4 0 0.5 0 1)))))
 
 (defun concat-cursor (cursor idx item)
   (if (eql cursor idx)
       (concatenate 'string "> " (name-of item))
       (name-of item)))
+
+(defmethod act ((this color-selection))
+  (with-slots (p1-confirmed-p p2-confirmed-p start-callback) this
+    (if (and p1-confirmed-p p2-confirmed-p)
+	(funcall start-callback))))
 
 
 
