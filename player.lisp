@@ -12,7 +12,15 @@
     :initform (vec2 20 100))
    (speed :initform 500 :accessor speed-of)
    (moving-up-p :initform nil :accessor moving-up-p)
-   (moving-down-p :initform nil :accessor moving-down-p)))
+   (moving-down-p :initform nil :accessor moving-down-p)
+   (time-last-skill :initform (real-time-seconds) :accessor time-last-skill)))
+
+(defun center-of (player)
+  (let ((position (position-of player))
+	(size (size-of player)))
+    (vec2
+     (+ (x position) (/ (x size) 2))
+     (+ (y position) (/ (y size) 2)))))
 
 (defun move (player direction delta-time)
   (let ((real-speed (* (speed-of player) delta-time)))

@@ -31,7 +31,7 @@
 (defmethod (setf position-of) ((vec vec2) (this positionable))
   (setf (x (position-of this)) (x vec)
 	(y (position-of this)) (y vec))
-  (position-of this))   
+  (position-of this))
 
 
 
@@ -49,7 +49,14 @@
 (defclass color ()
   ((name :initarg :name :accessor name-of)
    (description :initarg :description :accessor description-of)
+   (skill :reader skill-of)
    (value :initform (vec4 0 0 0 1) :initarg :value :accessor value-of)))
+
+(defmethod initialize-instance :after ((this color) &key)
+  (with-slots (name skill) this
+    (cond
+      ((string-equal name 'red)
+       (setf skill 'red-skill)))))
 
 
 

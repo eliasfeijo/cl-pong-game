@@ -9,5 +9,6 @@
 	       (:file "util")
 	       (:file "player")
 	       (:file "ball")
+	       (:file "skill")
 	       (:file "state")
 	       (:file "pong")))

@@ -100,10 +100,11 @@
 ;;; Game
 
 (defclass game (game-state)
-  ((player1 :initform (make-instance 'player) :accessor player1-of)
-   (player2 :initform (make-instance 'player) :accessor player2-of)
+  ((player1 :initform (make-instance 'player) :reader player1-of)
+   (player2 :initform (make-instance 'player) :reader player2-of)
    (ball :initform (make-instance 'ball))
-   (last-updated :initform (real-time-seconds))))
+   (last-updated :initform (real-time-seconds))
+   (vector-skill :initform (make-array 10 :fill-pointer 0))))
 
 (defmethod initialize-instance :after ((this game) &key)
   (with-slots (player1 player2 ball) this
@@ -115,16 +116,31 @@
      (position-of ball) (vec2 (- (/ *canvas-width* 2) 5) (- (/ *canvas-height* 2) 5)))))
 
 (defmethod press-key ((this game) key)
-  (with-slots (player1 player2) this
+  (with-slots (player1 player2 vector-skill) this
     (cond
       ((eql key :w)
        (setf (moving-up-p player1) t))
       ((eql key :s)
        (setf (moving-down-p player1) t))
+      ((eql key :space)
+       (push-skill vector-skill player1 'player2))
       ((eql key :up)
        (setf (moving-up-p player2) t))
       ((eql key :down)
-       (setf (moving-down-p player2) t)))))
+       (setf (moving-down-p player2) t))
+      ((eql key :enter)
+       (push-skill vector-skill player2 'player1)))))
+
+(defun push-skill (vector-skill player target)
+  (cond
+    ((string-equal (name-of (color-of player)) 'red)
+     (if (> (- (real-time-seconds) (time-last-skill player)) +delay-red-skill+)
+	 (progn
+	   (vector-push
+	    (make-instance 'red-skill
+			   :position (center-of player)
+			   :target target) vector-skill)
+	   (setf (time-last-skill player) (real-time-seconds)))))))
 
 (defmethod release-key ((this game) key)
   (with-slots (player1 player2) this
@@ -139,18 +155,35 @@
        (setf (moving-down-p player2) nil)))))
 
 (defmethod render ((this game))
-  (with-slots (player1 player2 ball) this
+  (with-slots (player1 player2 ball vector-skill) this
     (render player1)
     (render player2)
-    (render ball))
+    (render ball)
+    (loop for skill across vector-skill do (render skill)))
   (draw-text (write-to-string *player1-score*) (vec2 20 580))
   (draw-text (write-to-string *player2-score*) (vec2 780 580)))
 
 (defmethod act ((this game))
-  (with-slots (player1 player2 ball last-updated) this
+  (with-slots (player1 player2 ball last-updated vector-skill) this
     (let* ((current-time (real-time-seconds))
 	   (delta-time (- current-time last-updated)))
       (update-player player1 delta-time)
       (update-player player2 delta-time)
       (update-ball ball delta-time player1 player2)
+      (remove-skills-outside-of-canvas vector-skill)
+      (loop for skill across vector-skill do (update-skill skill player1 player2 delta-time))
       (setf last-updated current-time))))
+
+(defun remove-skills-outside-of-canvas (vector-skill)
+  (loop
+     for i from 0
+     for skill across vector-skill
+     do (unless (inside-canvas skill)
+	  (decf (fill-pointer vector-skill))
+	  (shiftf (aref vector-skill i) (aref vector-skill (length vector-skill))))))
+
+(defun inside-canvas (skill)
+  (and
+    (>= (+ (x (position-of skill)) (x (size-of skill))) 0)
+    (<= (x (position-of skill)) *canvas-width*)))
+
