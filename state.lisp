@@ -174,8 +174,16 @@
       (update-player player2 delta-time)
       (update-ball ball delta-time player1 player2)
       (remove-skills-outside-of-canvas vector-skill)
+      (remove-skills-colliding-with-player vector-skill)
       (loop for skill across vector-skill do (update-skill skill player1 player2 delta-time))
       (setf last-updated current-time))))
+
+(defun remove-skills-colliding-with-player (vector-skill)
+  (loop
+     for i from 0
+     for skill across vector-skill
+     do (if (collided-p skill)
+	    (vector-pop-position* vector-skill i))))
 
 (defun remove-skills-outside-of-canvas (vector-skill)
   (loop

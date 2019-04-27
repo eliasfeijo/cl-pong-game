@@ -10,5 +10,6 @@
 	       (:file "player")
 	       (:file "ball")
 	       (:file "skill")
+	       (:file "effect")
 	       (:file "state")
 	       (:file "pong")))

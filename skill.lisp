@@ -6,7 +6,7 @@
    (size :initarg :size :initform nil :accessor size-of)
    (speed :initarg :speed :initform nil :accessor speed-of)
    (fill-color :initarg :fill-color :initform nil :accessor fill-color-of)
-   (collided-p :initform nil :accessor collided-p)))
+   (collided-p :initform nil :reader collided-p)))
 
 (defgeneric update-skill (skill player1 player2 delta-time))
 (defgeneric move-skill (skill direction delta-time))
@@ -23,10 +23,20 @@
    (fill-color :initform (vec4 1 0 0 1))))
 
 (defmethod update-skill ((this red-skill) player1 player2 delta-time)
-  (with-slots (target speed) this
+  (with-slots (target speed collided-p) this
     (if (eql target 'player1)
-	(move-skill this 'left delta-time)
-	(move-skill this 'right delta-time))))
+	(progn
+	  (move-skill this 'left delta-time)
+	  (if (colliding-with this player1)
+	      (let ((burn (make-instance 'burning :target player1)))
+		(setf collided-p t)
+		(push-effect player1 burn))))
+	(progn
+	  (move-skill this 'right delta-time)
+	  (if (colliding-with this player2)
+	      (let ((burn (make-instance 'burning :target player2)))
+		(setf collided-p t)
+		(push-effect player2 burn)))))))
 
 (defmethod move-skill ((this red-skill) direction delta-time)
   (with-slots (speed position) this
