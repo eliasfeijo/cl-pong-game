@@ -15,7 +15,7 @@
 
 (defmethod start-effect ((this burning))
   (with-slots (target) this
-    (setf (speed-of target) 1000)))
+    (setf (speed-of target) 2000)))
 
 (defmethod stop-effect ((this burning))
   (with-slots (target) this

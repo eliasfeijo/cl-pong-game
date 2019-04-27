@@ -29,9 +29,11 @@
   (let ((real-speed (* (speed-of player) delta-time)))
     (case direction
       (down
-       (setf (y (position-of player)) (- (y (position-of player)) real-speed)))
+       (if (> (+ (y (position-of player)) (y (size-of player))) 0)
+	   (setf (y (position-of player)) (- (y (position-of player)) real-speed))))
       (up
-       (setf (y (position-of player)) (+ (y (position-of player)) real-speed))))))
+       (if (< (y (position-of player)) *canvas-height*)
+	   (setf (y (position-of player)) (+ (y (position-of player)) real-speed)))))))
 
 (defun update-player (player delta-time)
   (update-effects player)
