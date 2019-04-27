@@ -9,6 +9,13 @@
 (defmethod act ((this game-state))
   (declare (ignore this)))
 
+;;; Resource Preparation
+
+(defclass resource-preparation (game-state) ())
+
+(defmethod render ((this resource-preparation))
+  (draw-rect *canvas-origin* *canvas-width* *canvas-height* :fill-paint *black*)
+  (draw-text "Loading..." (vec2 350 300) :fill-color *white*))
 
 
 ;;; Color Selection
@@ -103,7 +110,7 @@
 
 (defclass game (game-state)
   ((player1 :initform (make-instance 'player) :reader player1-of)
-   (player2 :initform (make-instance 'player) :reader player2-of)
+   (player2 :initform (make-instance 'player :flipped-p t) :reader player2-of)
    (ball :initform (make-instance 'ball))
    (last-updated :initform (real-time-seconds))
    (skills :initform (make-array 10 :fill-pointer 0))

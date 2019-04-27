@@ -3,6 +3,8 @@
 
 (defvar *canvas-width* 800)
 (defvar *canvas-height* 600)
+(defvar *canvas-origin* (vec2 0 0))
+(defvar *canvas-center* (vec2 (/ *canvas-width* 2) (/ *canvas-height* 2)))
 
 (defvar *black* (vec4 0 0 0 1))
 (defvar *white* (vec4 1 1 1 1))
