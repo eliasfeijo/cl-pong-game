@@ -35,3 +35,16 @@
 (defmethod stop-effect ((this slow))
   (with-slots (target) this
     (setf (speed-of target) 500)))
+
+;;; Slow
+
+(defclass slip (effect)
+  ((duration :initform 0.75)))
+
+(defmethod start-effect ((this slip))
+  (with-slots (target) this
+    (setf (speed-of target) 1000)))
+
+(defmethod stop-effect ((this slip))
+  (with-slots (target) this
+    (setf (speed-of target) 300)))

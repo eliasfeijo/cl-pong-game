@@ -1,7 +1,7 @@
 ;;;; player.lisp
 (in-package :com.eliasfeijo.pong)
 
-(defclass player (positionable renderable)
+(defclass player (positionable renderable actor)
   ((color
     :initarg :color
     :accessor color-of
@@ -13,10 +13,7 @@
    (speed :initform 500 :accessor speed-of)
    (moving-up-p :initform nil :accessor moving-up-p)
    (moving-down-p :initform nil :accessor moving-down-p)
-   (time-last-skill :initform (real-time-seconds) :accessor time-last-skill)
-   (effects :initform (make-array 5 :fill-pointer 0) :accessor effects-of)))
-
-(defgeneric push-effect (player effect))
+   (time-last-skill :initform (real-time-seconds) :accessor time-last-skill)))
 
 (defun center-of (player)
   (let ((position (position-of player))
@@ -41,22 +38,7 @@
     ((moving-down-p player) (move player 'down delta-time))
     ((moving-up-p player) (move player 'up delta-time))))
 
-(defun update-effects (player)
-  (loop
-     for i from 0
-     for effect across (effects-of player)
-     do
-       (let ((time-elapsed (- (real-time-seconds) (time-started effect))))
-	 (if (> time-elapsed (duration-of effect))
-	     (progn
-	       (stop-effect effect)
-	       (vector-pop-position* (effects-of player) i))))))
-
 (defmethod render ((this player))
   (draw-rect (position-of this) (x (size-of this)) (y (size-of this)) :fill-paint (value-of (color-of this))))
 
 
-(defmethod push-effect ((this player) effect)
-  (with-slots (effects) this
-    (vector-push effect effects)
-    (start-effect effect)))

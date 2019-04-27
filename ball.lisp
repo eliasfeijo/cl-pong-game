@@ -1,7 +1,7 @@
 ;;;; ball.lisp
 (in-package :com.eliasfeijo.pong)
 
-(defclass ball (positionable)
+(defclass ball (positionable renderable actor)
   ((color
     :initarg :color
     :accessor color-of
@@ -13,7 +13,8 @@
    (speed :initform 300 :accessor speed-of)
    ;; The ball is always moving in one direction or another
    (moving-left-p :initform nil :accessor moving-left-p)
-   (moving-down-p :initform nil :accessor moving-down-p)))
+   (moving-down-p :initform nil :accessor moving-down-p)
+   (effects :initform (make-array 5 :fill-pointer 0) :accessor effects-of)))
 
 (defmethod render ((this ball))
   (draw-rect (position-of this) (x (size-of this)) (y (size-of this)) :fill-paint (color-of this)))
@@ -25,11 +26,18 @@
   (setf
    (position-of ball) (vec2 (- (/ *canvas-width* 2) 5) (- (/ *canvas-height* 2) 5))
    (moving-down-p ball) (eql (random 2) 1)
-   (moving-left-p ball) (eql (random 2) 1)))
+   (moving-left-p ball) (eql (random 2) 1))
+  (loop
+     for i from 0
+     for effect across (effects-of ball)
+     do
+       (stop-effect effect)
+       (vector-pop-position* (effects-of ball) i)))
 
 
 
 (defun update-ball (ball delta-time player1 player2)
+  (update-effects ball)
   (cond
     ;; Check for score
     ((<= (x (position-of ball)) 0) (score 'player2 ball))

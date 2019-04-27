@@ -3,6 +3,8 @@
 
 (defparameter +delay-red-skill+ 3.0)
 (defparameter +delay-green-skill+ 2.0)
+(defparameter +delay-blue-skill+ 2.5)
+
 
 (defclass skill (positionable renderable)
   ((target :initarg :target :initform nil)
@@ -11,7 +13,7 @@
    (fill-color :initarg :fill-color :initform nil :accessor fill-color-of)
    (collided-p :initform nil :reader collided-p)))
 
-(defgeneric update-skill (skill player1 player2 delta-time))
+(defgeneric update-skill (skill player1 player2 ball delta-time))
 (defgeneric move-skill (skill direction delta-time))
 
 (defmethod render ((this skill))
@@ -32,7 +34,7 @@
 	   (x position)
 	   (- (y position) (/ (y size) 2))))))
 
-(defmethod update-skill ((this red-skill) player1 player2 delta-time)
+(defmethod update-skill ((this red-skill) player1 player2 ball delta-time)
   (with-slots (target speed collided-p) this
     (if (eql target 'player1)
 	(progn
@@ -69,7 +71,7 @@
 	   (x position)
 	   (- (y position) (/ (y size) 2))))))
 
-(defmethod update-skill ((this green-skill) player1 player2 delta-time)
+(defmethod update-skill ((this green-skill) player1 player2 ball delta-time)
   (with-slots (target speed collided-p) this
     (if (eql target 'player1)
 	(progn
@@ -86,6 +88,45 @@
 		(push-effect player2 slow)))))))
 
 (defmethod move-skill ((this green-skill) direction delta-time)
+  (with-slots (speed position) this
+    (let ((real-speed (* speed delta-time)))
+      (if (eql direction 'left)
+	  (setf (x position) (- (x position) real-speed))
+	  (setf (x position) (+ (x position) real-speed))))))
+
+;;; Blue skill
+
+;;; Green skill
+
+(defclass blue-skill (skill)
+  ((size :initform (vec2 20 100))
+   (speed :initform 400)
+   (fill-color :initform (vec4 0 0 1 1))))
+
+(defmethod initialize-instance :after ((this blue-skill) &key)
+  (with-slots (position size) this
+    (setf position
+	  (vec2
+	   (x position)
+	   (- (y position) (/ (y size) 2))))))
+
+(defmethod update-skill ((this blue-skill) player1 player2 ball delta-time)
+  (with-slots (target speed collided-p) this
+    (if (eql target 'player1)
+	(progn
+	  (move-skill this 'left delta-time)
+	  (if (colliding-with this ball)
+	      (let ((slip (make-instance 'slip :target ball)))
+		(setf collided-p t)
+		(push-effect ball slip))))
+	(progn
+	  (move-skill this 'right delta-time)
+	  (if (colliding-with this ball)
+	      (let ((slip (make-instance 'slip :target ball)))
+		(setf collided-p t)
+		(push-effect ball slip)))))))
+
+(defmethod move-skill ((this blue-skill) direction delta-time)
   (with-slots (speed position) this
     (let ((real-speed (* speed delta-time)))
       (if (eql direction 'left)

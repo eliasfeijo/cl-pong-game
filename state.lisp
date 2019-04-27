@@ -152,6 +152,15 @@
 	    (make-instance 'green-skill
 			   :position (center-of player)
 			   :target target) skills)
+	   (setf (time-last-skill player) (real-time-seconds)))))
+    ;;; Blue skill
+    ((string-equal (name-of (color-of player)) 'blue)
+     (if (> (- (real-time-seconds) (time-last-skill player)) +delay-blue-skill+)
+	 (progn
+	   (vector-push
+	    (make-instance 'blue-skill
+			   :position (center-of player)
+			   :target target) skills)
 	   (setf (time-last-skill player) (real-time-seconds)))))))
 
 (defmethod release-key ((this game) key)
@@ -185,7 +194,7 @@
       (update-ball ball delta-time player1 player2)
       (remove-skills-outside-of-canvas skills)
       (remove-skills-colliding-with-player skills)
-      (loop for skill across skills do (update-skill skill player1 player2 delta-time))
+      (loop for skill across skills do (update-skill skill player1 player2 ball delta-time))
       (setf last-updated current-time))))
 
 (defun remove-skills-colliding-with-player (skills)

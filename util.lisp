@@ -96,3 +96,28 @@
        (>=
 	(+ (y (position-of origin)) (y (size-of origin)))
 	(y (position-of target)))) t)) nil))
+
+
+;;; Actor
+
+(defclass actor ()
+  ((effects :initform (make-array 5 :fill-pointer 0) :accessor effects-of)))
+
+(defgeneric update-effects (actor))
+(defgeneric push-effect (actor effect))
+
+(defmethod update-effects ((this actor))
+  (loop
+     for i from 0
+     for effect across (effects-of this)
+     do
+       (let ((time-elapsed (- (real-time-seconds) (time-started effect))))
+	 (if (> time-elapsed (duration-of effect))
+	     (progn
+	       (stop-effect effect)
+	       (vector-pop-position* (effects-of this) i))))))
+
+(defmethod push-effect ((this actor) effect)
+  (with-slots (effects) this
+    (vector-push effect effects)
+    (start-effect effect)))
