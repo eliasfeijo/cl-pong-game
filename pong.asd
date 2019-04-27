@@ -3,7 +3,7 @@
   :version "0.0.1"
   :author "Elias Feijó"
   :license "Public Domain"
-  :depends-on (alexandria bodge-utilities trivial-gamekit)
+  :depends-on (alexandria bodge-utilities trivial-gamekit array-utils)
   :serial t
   :components ((:file "packages")
 	       (:file "util")

@@ -115,6 +115,7 @@
      (position-of player2) (vec2 (- *canvas-width* (+ (x (size-of player2)) 40))  (- (/ *canvas-height* 2) (/ (y (size-of player2)) 2)))
      (position-of ball) (vec2 (- (/ *canvas-width* 2) 5) (- (/ *canvas-height* 2) 5)))))
 
+
 (defmethod press-key ((this game) key)
   (with-slots (player1 player2 vector-skill) this
     (cond
@@ -131,6 +132,7 @@
       ((eql key :enter)
        (push-skill vector-skill player2 'player1)))))
 
+
 (defun push-skill (vector-skill player target)
   (cond
     ((string-equal (name-of (color-of player)) 'red)
@@ -163,6 +165,7 @@
   (draw-text (write-to-string *player1-score*) (vec2 20 580))
   (draw-text (write-to-string *player2-score*) (vec2 780 580)))
 
+
 (defmethod act ((this game))
   (with-slots (player1 player2 ball last-updated vector-skill) this
     (let* ((current-time (real-time-seconds))
@@ -179,8 +182,7 @@
      for i from 0
      for skill across vector-skill
      do (unless (inside-canvas skill)
-	  (decf (fill-pointer vector-skill))
-	  (shiftf (aref vector-skill i) (aref vector-skill (length vector-skill))))))
+	  (vector-pop-position* vector-skill i))))
 
 (defun inside-canvas (skill)
   (and
