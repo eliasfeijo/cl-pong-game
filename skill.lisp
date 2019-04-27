@@ -22,6 +22,13 @@
    (speed :initform 400)
    (fill-color :initform (vec4 1 0 0 1))))
 
+(defmethod initialize-instance :after ((this red-skill) &key)
+  (with-slots (position size) this
+    (setf position
+	  (vec2
+	   (x position)
+	   (- (y position) (/ (y size) 2))))))
+
 (defmethod update-skill ((this red-skill) player1 player2 delta-time)
   (with-slots (target speed collided-p) this
     (if (eql target 'player1)
