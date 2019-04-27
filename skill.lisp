@@ -96,8 +96,6 @@
 
 ;;; Blue skill
 
-;;; Green skill
-
 (defclass blue-skill (skill)
   ((size :initform (vec2 20 100))
    (speed :initform 400)
