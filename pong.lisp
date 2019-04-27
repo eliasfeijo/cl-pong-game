@@ -29,7 +29,7 @@
       (%bind-button :down)
       (%bind-button :enter)
       (%bind-button :escape)))
-  (prepare-resources 'player-red 'player-green 'player-blue))
+  (prepare-resources 'player-red 'player-green 'player-blue 'red-skill 'green-skill 'blue-skill))
 
 (defmethod notice-resources ((this pong) &rest resource-names)
   (declare (ignore resource-names))

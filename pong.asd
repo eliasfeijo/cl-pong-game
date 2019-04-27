@@ -8,6 +8,7 @@
   :components ((:file "packages")
 	       (:file "util")
 	       (:file "player")
+	       (:file "animation")
 	       (:file "ball")
 	       (:file "skill")
 	       (:file "effect")

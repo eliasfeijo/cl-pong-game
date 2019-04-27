@@ -161,7 +161,8 @@
 	   (vector-push
 	    (make-instance 'red-skill
 			   :position (center-of player)
-			   :target target) skills)
+			   :target target
+			   :flipped-p (string-equal target 'player1)) skills)
 	   (setf (time-last-skill player) (real-time-seconds)))))
     ;;; Green skill
     ((string-equal (name-of (color-of player)) 'green)
@@ -170,7 +171,8 @@
 	   (vector-push
 	    (make-instance 'green-skill
 			   :position (center-of player)
-			   :target target) skills)
+			   :target target
+			   :flipped-p (string-equal target 'player1)) skills)
 	   (setf (time-last-skill player) (real-time-seconds)))))
     ;;; Blue skill
     ((string-equal (name-of (color-of player)) 'blue)
@@ -179,7 +181,8 @@
 	   (vector-push
 	    (make-instance 'blue-skill
 			   :position (center-of player)
-			   :target target) skills)
+			   :target target
+			   :flipped-p (string-equal target 'player1)) skills)
 	   (setf (time-last-skill player) (real-time-seconds)))))))
 
 (defmethod release-key ((this game) key)
