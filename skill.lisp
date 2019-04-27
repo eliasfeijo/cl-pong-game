@@ -58,7 +58,7 @@
 ;;; Red skill
 
 (defclass red-skill (skill)
-  ((size :initform (vec2 50 50))
+  ((size :initform (vec2 25 25))
    (speed :initform 400)
    (fill-color :initform (vec4 1 0 0 1))))
 
@@ -74,18 +74,20 @@
     (let* ((frame (get-frame *anim-red-skill* (real-time-seconds)))
 	   (origin (keyframe-origin frame))
 	   (end (keyframe-end frame)))
-      (if flipped-p
-	  (with-pushed-canvas ()
-	    (scale-canvas -1 1)
-	    (draw-image (vec2 (+ (- (x position)) (- (x size))) (y position)) 'red-skill
+      (with-pushed-canvas ()
+	(scale-canvas 0.5 0.5)
+	(if flipped-p
+	    (with-pushed-canvas ()
+	      (scale-canvas -1 1)
+	      (draw-image (vec2 (* (+ (- (x position)) (- (x size))) 2) (* (y position) 2)) 'red-skill
+			  :origin origin
+			  :width (- (x end) (x origin))
+			  :height (- (y end) (y origin))))
+	    (draw-image (vec2 (* (x position) 2) (* (y position) 2)) 'red-skill
 			:origin origin
 			:width (- (x end) (x origin))
-			:height (- (y end) (y origin))))
-	  (draw-image position 'red-skill
-		      :origin origin
-		      :width (- (x end) (x origin))
-		      :height (- (y end) (y origin)))))))
-
+			:height (- (y end) (y origin))))))))
+  
 (defmethod update-skill ((this red-skill) player1 player2 ball delta-time)
   (with-slots (target speed collided-p) this
     (if (eql target 'player1)
