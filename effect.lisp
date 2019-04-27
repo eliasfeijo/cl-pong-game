@@ -39,7 +39,7 @@
 ;;; Slow
 
 (defclass slip (effect)
-  ((duration :initform 0.75)))
+  ((duration :initform 1.0)))
 
 (defmethod start-effect ((this slip))
   (with-slots (target) this
