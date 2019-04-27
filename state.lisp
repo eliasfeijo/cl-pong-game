@@ -23,6 +23,8 @@
 (defmethod press-key ((this color-selection) key)
   (with-slots (p1-cursor p2-cursor p1-confirmed-p p2-confirmed-p) this
     (cond
+      ((eql key :escape)
+       (stop))
       ;;; Player 1
       ((eql key :w)
        (cond
@@ -124,9 +126,11 @@
   (with-slots (player1 player2 skills game-over-p color-selection-callback) this
     (if game-over-p
 	(cond
-	  ((or (eql key :space) (eql key :enter))
+	  ((or (eql key :space) (eql key :enter) (eql key :escape))
 	   (funcall color-selection-callback)))
 	(cond
+	  ((eql key :escape)
+	   (funcall color-selection-callback))
 	  ((eql key :w)
 	   (setf (moving-up-p player1) t))
 	  ((eql key :s)

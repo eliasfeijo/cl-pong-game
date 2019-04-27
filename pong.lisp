@@ -33,8 +33,8 @@
       (%bind-button :space)
       (%bind-button :up)
       (%bind-button :down)
-      (%bind-button :enter))
-    (bind-button :escape :pressed #'stop)))
+      (%bind-button :enter)
+      (%bind-button :escape))))
 
 
 
