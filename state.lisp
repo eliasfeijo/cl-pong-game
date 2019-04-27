@@ -105,6 +105,7 @@
    (ball :initform (make-instance 'ball))
    (last-updated :initform (real-time-seconds))
    (skills :initform (make-array 10 :fill-pointer 0))
+   (color-selection-callback :initarg :color-selection-callback)
    (game-over-callback :initarg :game-over)
    (game-over-p :initform nil :accessor game-over-p)
    (winner :initform nil :accessor winner-of)))
@@ -120,21 +121,24 @@
 
 
 (defmethod press-key ((this game) key)
-  (with-slots (player1 player2 skills game-over-p) this
-    (unless game-over-p
-      (cond
-	((eql key :w)
-	 (setf (moving-up-p player1) t))
-	((eql key :s)
-	 (setf (moving-down-p player1) t))
-	((eql key :space)
-	 (push-skill skills player1 'player2))
-	((eql key :up)
-	 (setf (moving-up-p player2) t))
-	((eql key :down)
-	 (setf (moving-down-p player2) t))
-	((eql key :enter)
-	 (push-skill skills player2 'player1))))))
+  (with-slots (player1 player2 skills game-over-p color-selection-callback) this
+    (if game-over-p
+	(cond
+	  ((or (eql key :space) (eql key :enter))
+	   (funcall color-selection-callback)))
+	(cond
+	  ((eql key :w)
+	   (setf (moving-up-p player1) t))
+	  ((eql key :s)
+	   (setf (moving-down-p player1) t))
+	  ((eql key :space)
+	   (push-skill skills player1 'player2))
+	  ((eql key :up)
+	   (setf (moving-up-p player2) t))
+	  ((eql key :down)
+	   (setf (moving-down-p player2) t))
+	  ((eql key :enter)
+	   (push-skill skills player2 'player1))))))
 
 
 (defun push-skill (skills player target)

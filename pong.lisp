@@ -16,7 +16,7 @@
 		(game-over-p game-state) t
 		(winner-of game-state) winner))
 	     (start-game (&key player1-color player2-color)
-	       (setf game-state (make-instance 'game :game-over #'game-over))
+	       (setf game-state (make-instance 'game :game-over #'game-over :color-selection-callback #'(lambda () (setf game-state (make-instance 'color-selection :start #'start-game)))))
 	       (setf (color-of (player1-of game-state)) player1-color)
 	       (setf (color-of (player2-of game-state)) player2-color)))
       (setf game-state (make-instance 'color-selection :start #'start-game)))
