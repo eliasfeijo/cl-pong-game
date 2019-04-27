@@ -135,11 +135,21 @@
 
 (defun push-skill (skills player target)
   (cond
+    ;;; Red skill
     ((string-equal (name-of (color-of player)) 'red)
      (if (> (- (real-time-seconds) (time-last-skill player)) +delay-red-skill+)
 	 (progn
 	   (vector-push
 	    (make-instance 'red-skill
+			   :position (center-of player)
+			   :target target) skills)
+	   (setf (time-last-skill player) (real-time-seconds)))))
+    ;;; Green skill
+    ((string-equal (name-of (color-of player)) 'green)
+     (if (> (- (real-time-seconds) (time-last-skill player)) +delay-green-skill+)
+	 (progn
+	   (vector-push
+	    (make-instance 'green-skill
 			   :position (center-of player)
 			   :target target) skills)
 	   (setf (time-last-skill player) (real-time-seconds)))))))

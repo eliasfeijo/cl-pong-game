@@ -1,6 +1,9 @@
 ;;;; skill.lisp
 (in-package :com.eliasfeijo.pong)
 
+(defparameter +delay-red-skill+ 3.0)
+(defparameter +delay-green-skill+ 2.0)
+
 (defclass skill (positionable renderable)
   ((target :initarg :target :initform nil)
    (size :initarg :size :initform nil :accessor size-of)
@@ -15,8 +18,8 @@
   (with-slots (position size fill-color) this
     (draw-rect position (x size) (y size) :fill-paint fill-color)))
 
-(defparameter +delay-red-skill+ 3.0)
-
+;;; Red skill
+
 (defclass red-skill (skill)
   ((size :initform (vec2 50 50))
    (speed :initform 400)
@@ -46,6 +49,43 @@
 		(push-effect player2 burn)))))))
 
 (defmethod move-skill ((this red-skill) direction delta-time)
+  (with-slots (speed position) this
+    (let ((real-speed (* speed delta-time)))
+      (if (eql direction 'left)
+	  (setf (x position) (- (x position) real-speed))
+	  (setf (x position) (+ (x position) real-speed))))))
+
+;;; Green skill
+
+(defclass green-skill (skill)
+  ((size :initform (vec2 30 10))
+   (speed :initform 600)
+   (fill-color :initform (vec4 0 1 0 1))))
+
+(defmethod initialize-instance :after ((this green-skill) &key)
+  (with-slots (position size) this
+    (setf position
+	  (vec2
+	   (x position)
+	   (- (y position) (/ (y size) 2))))))
+
+(defmethod update-skill ((this green-skill) player1 player2 delta-time)
+  (with-slots (target speed collided-p) this
+    (if (eql target 'player1)
+	(progn
+	  (move-skill this 'left delta-time)
+	  (if (colliding-with this player1)
+	      (let ((slow (make-instance 'slow :target player1)))
+		(setf collided-p t)
+		(push-effect player1 slow))))
+	(progn
+	  (move-skill this 'right delta-time)
+	  (if (colliding-with this player2)
+	      (let ((slow (make-instance 'slow :target player2)))
+		(setf collided-p t)
+		(push-effect player2 slow)))))))
+
+(defmethod move-skill ((this green-skill) direction delta-time)
   (with-slots (speed position) this
     (let ((real-speed (* speed delta-time)))
       (if (eql direction 'left)
