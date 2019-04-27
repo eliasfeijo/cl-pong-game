@@ -1,6 +1,8 @@
 ;;;; ball.lisp
 (in-package :com.eliasfeijo.pong)
 
+(defparameter +max-score+ 5)
+
 (defclass ball (positionable renderable actor)
   ((color
     :initarg :color
@@ -19,10 +21,15 @@
 (defmethod render ((this ball))
   (draw-rect (position-of this) (x (size-of this)) (y (size-of this)) :fill-paint (color-of this)))
 
-(defun score (player ball)
+(defun score (player ball game-over-callback)
   (if (eql player 'player1)
       (incf *player1-score*)
       (incf *player2-score*))
+  (cond
+    ((>= *player1-score* +max-score+)
+     (funcall game-over-callback 'player1))
+    ((>= *player2-score* +max-score+)
+     (funcall game-over-callback 'player2)))
   (setf
    (position-of ball) (vec2 (- (/ *canvas-width* 2) 5) (- (/ *canvas-height* 2) 5))
    (moving-down-p ball) (eql (random 2) 1)
@@ -36,12 +43,12 @@
 
 
 
-(defun update-ball (ball delta-time player1 player2)
+(defun update-ball (ball delta-time player1 player2 game-over-callback)
   (update-effects ball)
   (cond
     ;; Check for score
-    ((<= (x (position-of ball)) 0) (score 'player2 ball))
-    ((>= (x (position-of ball)) (+ *canvas-width* (x (size-of ball)))) (score 'player1 ball))
+    ((<= (x (position-of ball)) 0) (score 'player2 ball game-over-callback))
+    ((>= (x (position-of ball)) (+ *canvas-width* (x (size-of ball)))) (score 'player1 ball game-over-callback))
     ;;; Check collision with walls
     ((<= (y (position-of ball)) 0)
      (setf (moving-down-p ball) nil))
