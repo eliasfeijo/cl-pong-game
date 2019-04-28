@@ -4,6 +4,9 @@
 (defparameter *player1-score* 0)
 (defparameter *player2-score* 0)
 
+(define-font 'samurai-bob "fonts/CFSamuraiBob.ttf")
+(define-font 'data "fonts/data-latin.ttf")
+
 (defclass game-state () ())
 
 (defmethod act ((this game-state))
@@ -16,10 +19,47 @@
 (defmethod render ((this resource-preparation))
   (draw-rect *canvas-origin* *canvas-width* *canvas-height* :fill-paint *black*)
   (draw-text "Loading..." (vec2 350 300) :fill-color *white*))
+
+;;; Initial Screen
 
+(defclass initial-screen (game-state)
+  ((title-font :initform (make-font 'samurai-bob 128))
+   (header-font :initform (make-font 'data 62))
+   (subheader-font :initform (make-font 'data 48))
+   (text-font :initform (make-font 'data 32))
+   (text2-font :initform (make-font 'data 28))))
+
+(defmethod render ((this initial-screen))
+  (with-slots (title-font header-font subheader-font text-font text2-font) this
+    ;(draw-rect *canvas-origin* *canvas-width* *canvas-height* :fill-paint (vec4 0.3 0.4 0.9 1))
+    (draw-text "Pong Fight" (vec2 160 500) :fill-color *black* :font title-font)
+    (draw-text "by Elias Feijo" (vec2 165 450) :fill-color *black* :font text-font)
+    ;; "ó" accent
+    (draw-line (vec2 360 470) (vec2 363 474) *black* :thickness 2)
+    ;; Box
+    (draw-rect (vec2 150 80) 500 350 :stroke-paint *black*)
+    (draw-text "Instructions" (vec2 230 370) :fill-color *black* :font header-font)
+    (draw-rect (vec2 400 80) 1 250 :stroke-paint *black*)
+    ;;; Player 1 instructions
+    (draw-text "Player 1" (vec2 180 300) :fill-color *black* :font subheader-font)
+    (draw-text "W - move up" (vec2 180 250) :fill-color *black* :font text2-font)
+    (draw-text "S - move down" (vec2 180 200) :fill-color *black* :font text2-font)
+    (draw-text "Space - shoot" (vec2 180 150) :fill-color *black* :font text2-font)
+    ;;; Player 2 instructions
+    (draw-text "Player 2" (vec2 430 300) :fill-color *black* :font subheader-font)
+    (draw-text "Up - move up" (vec2 430 250) :fill-color *black* :font text2-font)
+    (draw-text "Down - move down" (vec2 430 200) :fill-color *black* :font text2-font)
+    (draw-text "Enter - shoot" (vec2 430 150) :fill-color *black* :font text2-font)
+    (draw-text "Shoot to confirm" (vec2 160 100) :fill-color *black* :font text-font)
+    (draw-text "Shoot to confirm" (vec2 410 100) :fill-color *black* :font text-font)))
+
+(defmethod press-key ((this initial-screen) key)
+  (cond
+    ((eql key :escape)
+     (stop))))
 
 ;;; Color Selection
-
+
 (defclass color-selection (game-state)
   ((p1-cursor :initform 0)
    (p2-cursor :initform 0)

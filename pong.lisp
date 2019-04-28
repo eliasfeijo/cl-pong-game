@@ -9,7 +9,7 @@
   ((game-state))
   (:viewport-width *canvas-width*)
   (:viewport-height *canvas-height*)
-  (:viewport-title "Pong")
+  (:viewport-title "Battle Pong")
   (:prepare-resources nil))
 
 (defmethod post-initialize :after ((app pong))
@@ -29,20 +29,23 @@
       (%bind-button :down)
       (%bind-button :enter)
       (%bind-button :escape)))
-  (prepare-resources 'player-red 'player-green 'player-blue 'red-skill 'green-skill 'blue-skill))
+  (prepare-resources 'player-red 'player-green 'player-blue 'red-skill 'green-skill 'blue-skill 'samurai-bob 'data))
 
 (defmethod notice-resources ((this pong) &rest resource-names)
   (declare (ignore resource-names))
   (with-slots (game-state) this
-    (labels ((game-over (winner)
-	       (setf
-		(game-over-p game-state) t
-		(winner-of game-state) winner))
-	     (start-game (&key player1-color player2-color)
-	       (setf game-state (make-instance 'game :game-over #'game-over :color-selection-callback #'(lambda () (setf game-state (make-instance 'color-selection :start #'start-game)))))
-	       (setf (color-of (player1-of game-state)) player1-color)
-	       (setf (color-of (player2-of game-state)) player2-color)))
-      (setf game-state (make-instance 'color-selection :start #'start-game)))))
+    (labels
+	((color-selection-screen ()
+	   (setf game-state (make-instance 'color-selection :start #'start-game)))
+	 (game-over (winner)
+	   (setf
+	    (game-over-p game-state) t
+	    (winner-of game-state) winner))
+	 (start-game (&key player1-color player2-color)
+	   (setf game-state (make-instance 'game :game-over #'game-over :color-selection-callback #'color-selection-screen))
+	   (setf (color-of (player1-of game-state)) player1-color)
+	   (setf (color-of (player2-of game-state)) player2-color)))
+      (setf game-state (make-instance 'initial-screen)))))
 
 
 
