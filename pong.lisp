@@ -45,7 +45,7 @@
 	   (setf game-state (make-instance 'game :game-over #'game-over :color-selection-callback #'color-selection-screen))
 	   (setf (color-of (player1-of game-state)) player1-color)
 	   (setf (color-of (player2-of game-state)) player2-color)))
-      (setf game-state (make-instance 'initial-screen)))))
+      (setf game-state (make-instance 'initial-screen :color-selection #'color-selection-screen)))))
 
 
 

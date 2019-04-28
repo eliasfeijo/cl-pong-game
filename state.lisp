@@ -27,10 +27,28 @@
    (header-font :initform (make-font 'data 62))
    (subheader-font :initform (make-font 'data 48))
    (text-font :initform (make-font 'data 32))
-   (text2-font :initform (make-font 'data 28))))
+   (text2-font :initform (make-font 'data 28))
+   (p1-confirmed-p :initform nil)
+   (p2-confirmed-p :initform nil)
+   (color-selection-callback :initarg :color-selection)))
+
+(defmethod press-key ((this initial-screen) key)
+  (with-slots (p1-confirmed-p p2-confirmed-p) this
+    (cond
+      ((eql key :escape)
+       (stop))
+      ((eql key :space)
+       (setf p1-confirmed-p t))
+      ((eql key :enter)
+       (setf p2-confirmed-p t)))))
+
+(defmethod act ((this initial-screen))
+  (with-slots (p1-confirmed-p p2-confirmed-p color-selection-callback) this
+    (if (and p1-confirmed-p p2-confirmed-p)
+	(funcall color-selection-callback))))
 
 (defmethod render ((this initial-screen))
-  (with-slots (title-font header-font subheader-font text-font text2-font) this
+  (with-slots (title-font header-font subheader-font text-font text2-font p1-confirmed-p p2-confirmed-p) this
     ;(draw-rect *canvas-origin* *canvas-width* *canvas-height* :fill-paint (vec4 0.3 0.4 0.9 1))
     (draw-text "Pong Fight" (vec2 160 500) :fill-color *black* :font title-font)
     (draw-text "by Elias Feijo" (vec2 165 450) :fill-color *black* :font text-font)
@@ -50,13 +68,12 @@
     (draw-text "Up - move up" (vec2 430 250) :fill-color *black* :font text2-font)
     (draw-text "Down - move down" (vec2 430 200) :fill-color *black* :font text2-font)
     (draw-text "Enter - shoot" (vec2 430 150) :fill-color *black* :font text2-font)
-    (draw-text "Shoot to confirm" (vec2 160 100) :fill-color *black* :font text-font)
-    (draw-text "Shoot to confirm" (vec2 410 100) :fill-color *black* :font text-font)))
-
-(defmethod press-key ((this initial-screen) key)
-  (cond
-    ((eql key :escape)
-     (stop))))
+    (if p1-confirmed-p
+	(draw-text "Confirmed" (vec2 200 100) :fill-color (vec4 0 0.6 0 1) :font text-font)
+	(draw-text "Shoot to confirm" (vec2 160 100) :fill-color *black* :font text-font))
+    (if p2-confirmed-p
+	(draw-text "Confirmed" (vec2 450 100) :fill-color (vec4 0 0.6 0 1) :font text-font)
+	(draw-text "Shoot to confirm" (vec2 410 100) :fill-color *black* :font text-font))))
 
 ;;; Color Selection
 
