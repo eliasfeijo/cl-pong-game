@@ -49,7 +49,7 @@
 
 (defmethod render ((this initial-screen))
   (with-slots (title-font header-font subheader-font text-font text2-font p1-confirmed-p p2-confirmed-p) this
-    ;(draw-rect *canvas-origin* *canvas-width* *canvas-height* :fill-paint (vec4 0.3 0.4 0.9 1))
+    (draw-rect *canvas-origin* *canvas-width* *canvas-height* :fill-paint (vec4 0.8 0.8 0.0 1))
     (draw-text "Pong Fight" (vec2 160 500) :fill-color *black* :font title-font)
     (draw-text "by Elias Feijo" (vec2 165 450) :fill-color *black* :font text-font)
     ;; "ó" accent
@@ -124,6 +124,7 @@
 
 (defmethod render ((this color-selection))
   (with-slots (p1-cursor p2-cursor p1-confirmed-p p2-confirmed-p) this
+    (draw-rect *canvas-origin* *canvas-width* *canvas-height* :fill-paint (vec4 0.8 0.8 0.0 1))
     (draw-rect (vec2 (/ *canvas-width* 2) 0) 1 (- *canvas-height* 50) :fill-paint *black*)
     (draw-text "Select your color" (vec2 (- (/ *canvas-width* 2) 50) (- *canvas-height* 30)))
     ;;; Player 1
@@ -256,6 +257,7 @@
 
 (defmethod render ((this game))
   (with-slots (player1 player2 ball skills game-over-p winner) this
+    (draw-rect *canvas-origin* *canvas-width* *canvas-height* :fill-paint (vec4 0.8 0.8 0 1))
     (render player1)
     (render player2)
     (render ball)

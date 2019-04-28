@@ -71,7 +71,7 @@
    (make-instance 'color
 		  :name "Green"
 		  :description "Slow down your foe!"
-		  :value (vec4 0 1 0 1))
+		  :value (vec4 0 0.6 0 1))
    (make-instance 'color
 		  :name "Blue"
 		  :description "Increases the ball's speed."
