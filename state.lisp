@@ -82,7 +82,10 @@
    (p2-cursor :initform 0)
    (p1-confirmed-p :initform nil)
    (p2-confirmed-p :initform nil)
-   (start-callback :initarg :start)))
+   (start-callback :initarg :start)
+   (subheader-font :initform (make-font 'data 48))
+   (text-font :initform (make-font 'data 32))
+   (text2-font :initform (make-font 'data 28))))
 
 (defmethod press-key ((this color-selection) key)
   (with-slots (p1-cursor p2-cursor p1-confirmed-p p2-confirmed-p) this
@@ -123,32 +126,32 @@
 
 
 (defmethod render ((this color-selection))
-  (with-slots (p1-cursor p2-cursor p1-confirmed-p p2-confirmed-p) this
+  (with-slots (p1-cursor p2-cursor p1-confirmed-p p2-confirmed-p subheader-font text-font text2-font) this
     (draw-rect *canvas-origin* *canvas-width* *canvas-height* :fill-paint (vec4 0.8 0.8 0.0 1))
-    (draw-rect (vec2 (/ *canvas-width* 2) 0) 1 (- *canvas-height* 50) :fill-paint *black*)
-    (draw-text "Select your color" (vec2 (- (/ *canvas-width* 2) 50) (- *canvas-height* 30)))
+    (draw-rect (vec2 (/ *canvas-width* 2) 0) 1 (- *canvas-height* 80) :fill-paint *black*)
+    (draw-text "Select your color" (vec2 (- (/ *canvas-width* 2) 170) (- *canvas-height* 50)) :font subheader-font)
     ;;; Player 1
-    (draw-text "Player 1 (W and S):" (vec2 50 500))
+    (draw-text "Player 1 (W and S):" (vec2 50 500) :font text-font)
     (loop
        for item in *list-color*
        for i from 1 to (length *list-color*)
        for text = (concat-cursor p1-cursor (- i 1) item)
        then (concat-cursor p1-cursor (- i 1) item)
-       do (draw-text text (vec2 50 (- 480 (* 15 i)))))
-    (draw-text (description-of (elt *list-color* p1-cursor)) (vec2 50 400) :fill-color (value-of (elt *list-color* p1-cursor)))
-    (draw-text "Press space to confirm." (vec2 50 350))
-    (if p1-confirmed-p (draw-text "Confirmed." (vec2 50 330) :fill-color (vec4 0 0.5 0 1)))
+       do (draw-text text (vec2 50 (- 480 (* 35 i))) :font text2-font))
+    (draw-text (description-of (elt *list-color* p1-cursor)) (vec2 50 320) :fill-color (value-of (elt *list-color* p1-cursor)) :font text2-font)
+    (draw-text "Press space to confirm." (vec2 50 250) :font text-font)
+    (if p1-confirmed-p (draw-text "Confirmed." (vec2 50 210) :fill-color (vec4 0 0.5 0 1) :font text-font))
     ;;; Player 2
-    (draw-text "Player 2 (Up and Down):" (vec2 450 500))
+    (draw-text "Player 2 (Up and Down):" (vec2 450 500) :font text-font)
     (loop
        for item in *list-color*
        for i from 1 to (length *list-color*)
        for text = (concat-cursor p2-cursor (- i 1) item)
        then (concat-cursor p2-cursor (- i 1) item)
-       do (draw-text text (vec2 450 (- 480 (* 15 i)))))
-    (draw-text (description-of (elt *list-color* p2-cursor)) (vec2 450 400) :fill-color (value-of (elt *list-color* p2-cursor)))
-    (draw-text "Press enter to confirm." (vec2 450 350))
-    (if p2-confirmed-p (draw-text "Confirmed." (vec2 450 330) :fill-color (vec4 0 0.5 0 1)))))
+       do (draw-text text (vec2 450 (- 480 (* 35 i))) :font text2-font))
+    (draw-text (description-of (elt *list-color* p2-cursor)) (vec2 450 320) :fill-color (value-of (elt *list-color* p2-cursor)) :font text2-font)
+    (draw-text "Press enter to confirm." (vec2 450 250) :font text-font)
+    (if p2-confirmed-p (draw-text "Confirmed." (vec2 450 210) :fill-color (vec4 0 0.5 0 1) :font text-font))))
 
 (defun concat-cursor (cursor idx item)
   (if (eql cursor idx)
