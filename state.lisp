@@ -178,7 +178,9 @@
    (color-selection-callback :initarg :color-selection-callback)
    (game-over-callback :initarg :game-over)
    (game-over-p :initform nil :accessor game-over-p)
-   (winner :initform nil :accessor winner-of)))
+   (winner :initform nil :accessor winner-of)
+   (score-font :initform (make-font 'data 48))
+   (text-font :initform (make-font 'data 32))))
 
 (defmethod initialize-instance :after ((this game) &key)
   (with-slots (player1 player2 ball) this
@@ -259,18 +261,18 @@
        (setf (moving-down-p player2) nil)))))
 
 (defmethod render ((this game))
-  (with-slots (player1 player2 ball skills game-over-p winner) this
+  (with-slots (player1 player2 ball skills game-over-p winner score-font text-font) this
     (draw-rect *canvas-origin* *canvas-width* *canvas-height* :fill-paint (vec4 0.8 0.8 0 1))
     (render player1)
     (render player2)
     (render ball)
     (loop for skill across skills do (render skill))
-    (draw-text (write-to-string *player1-score*) (vec2 350 580))
-    (draw-text (write-to-string *player2-score*) (vec2 450 580))
+    (draw-text (write-to-string *player1-score*) (vec2 300 550) :font score-font)
+    (draw-text (write-to-string *player2-score*) (vec2 480 550) :font score-font)
     (if game-over-p
 	(if (eql winner 'player1)
-	    (draw-text "Player 1 wins." (vec2 350 400))
-	    (draw-text "Player 2 wins." (vec2 350 400))))))
+	    (draw-text "Player 1 wins." (vec2 300 400) :font text-font)
+	    (draw-text "Player 2 wins." (vec2 300 400) :font text-font)))))
 
 
 (defmethod act ((this game))
