@@ -27,16 +27,24 @@
 				    (60 0 90 10 0.5))
 				  :looped-p t))
 (defparameter *anim-blue-skill* (make-animation
-				 '((0 0 20 100 0)
-				   (20 0 40 100 0.1)
-				   (40 0 60 100 0.2)
-				   (60 0 80 100 0.3)
-				   (80 0 100 100 0.4)
-				   (100 0 120 100 0.5)
-				   (120 0 140 100 0.6)
-				   (140 0 160 100 0.7)
-				   (160 0 180 100 0.8)
-				   (180 0 200 100 0.9))
+				 '((0 0 100 100 0)
+				   (100 0 200 100 0.1)
+				   (200 0 300 100 0.2)
+				   (300 0 400 100 0.3)
+				   (400 0 500 100 0.4)
+				   (500 0 600 100 0.5)
+				   (600 0 700 100 0.6)
+				   (700 0 800 100 0.7)
+				   (800 0 900 100 0.8)
+				   (900 0 1000 100 0.9)
+				   (1000 0 1100 100 1.0)
+				   (1100 0 1200 100 1.1)
+				   (1200 0 1300 100 1.2)
+				   (1300 0 1400 100 1.3)
+				   (1400 0 1500 100 1.4)
+				   (1500 0 1600 100 1.5)
+				   (1600 0 1700 100 1.6)
+				   (1700 0 1800 100 1.7))
 				 :looped-p t))
 
 
@@ -187,11 +195,11 @@
       (if flipped-p
 	  (with-pushed-canvas ()
 	    (scale-canvas -1 1)
-	    (draw-image (vec2 (+ (- (x position)) (- (x size))) (y position)) 'blue-skill
+	    (draw-image (vec2 (+ (- (x position)) (- (x size)) -80) (y position)) 'blue-skill
 			:origin origin
 			:width (- (x end) (x origin))
 			:height (- (y end) (y origin))))
-	  (draw-image position 'blue-skill
+	  (draw-image (vec2 (- (x position) 80) (y position)) 'blue-skill
 		      :origin origin
 		      :width (- (x end) (x origin))
 		      :height (- (y end) (y origin)))))))
