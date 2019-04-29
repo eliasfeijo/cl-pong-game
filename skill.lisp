@@ -131,7 +131,7 @@
 (defclass green-skill (skill)
   ((size :initform (vec2 30 10))
    (speed :initform 600)
-   (speed-y :initform 300)
+   (speed-y :initform 350)
    (fill-color :initform (vec4 0 1 0 1))))
 
 (defmethod initialize-instance :after ((this green-skill) &key)
@@ -181,15 +181,15 @@
       (if (eql direction 'left)
 	  (let ((target (y (center-of player1))))
 	    (setf (x position) (- (x position) real-speed))
-	    (if (< (y position) (- target 50))
+	    (if (< (y position) (- target 25))
 		(setf (y position) (+ (y position) real-speed-y))
-		(if (> (y position) (+ target 50))
+		(if (> (y position) (+ target 25))
 		    (setf (y position) (- (y position) real-speed-y)))))
 	  (let ((target (y (center-of player2))))
 	    (setf (x position) (+ (x position) real-speed))
-	    (if (< (y position) (- target 50))
+	    (if (< (y position) (- target 25))
 		(setf (y position) (+ (y position) real-speed-y))
-		(if (> (y position) (+ target 50))
+		(if (> (y position) (+ target 25))
 		    (setf (y position) (- (y position) real-speed-y)))))))))
 
 ;;; Blue skill
