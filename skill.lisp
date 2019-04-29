@@ -57,11 +57,18 @@
    (flipped-p :initarg :flipped-p :initform nil)))
 
 (defgeneric update-skill (skill player1 player2 ball delta-time))
-(defgeneric move-skill (skill direction delta-time))
+(defgeneric move-skill (skill direction delta-time &key &allow-other-keys))
 
 (defmethod render ((this skill))
   (with-slots (position size fill-color) this
     (draw-rect position (x size) (y size) :fill-paint fill-color)))
+
+(defun center-of (skill)
+  (let ((position (position-of skill))
+	(size (size-of skill)))
+    (vec2
+     (+ (x position) (/ (x size) 2))
+     (+ (y position) (/ (y size) 2)))))
 
 ;;; Red skill
 
@@ -112,7 +119,7 @@
 		(setf collided-p t)
 		(push-effect player2 burn)))))))
 
-(defmethod move-skill ((this red-skill) direction delta-time)
+(defmethod move-skill ((this red-skill) direction delta-time &key)
   (with-slots (speed position) this
     (let ((real-speed (* speed delta-time)))
       (if (eql direction 'left)
@@ -124,6 +131,7 @@
 (defclass green-skill (skill)
   ((size :initform (vec2 30 10))
    (speed :initform 600)
+   (speed-y :initform 300)
    (fill-color :initform (vec4 0 1 0 1))))
 
 (defmethod initialize-instance :after ((this green-skill) &key)
@@ -154,24 +162,35 @@
   (with-slots (target speed collided-p) this
     (if (eql target 'player1)
 	(progn
-	  (move-skill this 'left delta-time)
+	  (move-skill this 'left delta-time :player1 player1 :player2 player2)
 	  (if (colliding-with this player1)
 	      (let ((slow (make-instance 'slow :target player1)))
 		(setf collided-p t)
 		(push-effect player1 slow))))
 	(progn
-	  (move-skill this 'right delta-time)
+	  (move-skill this 'right delta-time :player1 player1 :player2 player2)
 	  (if (colliding-with this player2)
 	      (let ((slow (make-instance 'slow :target player2)))
 		(setf collided-p t)
 		(push-effect player2 slow)))))))
 
-(defmethod move-skill ((this green-skill) direction delta-time)
-  (with-slots (speed position) this
-    (let ((real-speed (* speed delta-time)))
+(defmethod move-skill ((this green-skill) direction delta-time &key player1 player2)
+  (with-slots (speed speed-y position) this
+    (let ((real-speed (* speed delta-time))
+	  (real-speed-y (* speed-y delta-time)))
       (if (eql direction 'left)
-	  (setf (x position) (- (x position) real-speed))
-	  (setf (x position) (+ (x position) real-speed))))))
+	  (let ((target (y (center-of player1))))
+	    (setf (x position) (- (x position) real-speed))
+	    (if (< (y position) (- target 50))
+		(setf (y position) (+ (y position) real-speed-y))
+		(if (> (y position) (+ target 50))
+		    (setf (y position) (- (y position) real-speed-y)))))
+	  (let ((target (y (center-of player2))))
+	    (setf (x position) (+ (x position) real-speed))
+	    (if (< (y position) (- target 50))
+		(setf (y position) (+ (y position) real-speed-y))
+		(if (> (y position) (+ target 50))
+		    (setf (y position) (- (y position) real-speed-y)))))))))
 
 ;;; Blue skill
 
@@ -220,7 +239,7 @@
 		(setf collided-p t)
 		(push-effect ball slip)))))))
 
-(defmethod move-skill ((this blue-skill) direction delta-time)
+(defmethod move-skill ((this blue-skill) direction delta-time &key)
   (with-slots (speed position) this
     (let ((real-speed (* speed delta-time)))
       (if (eql direction 'left)
