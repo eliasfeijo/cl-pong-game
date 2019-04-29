@@ -1,3 +1,4 @@
+(cl:pushnew :bodge-gl2 cl:*features*)
 (asdf:defsystem "pong"
   :description "Pong game made with trivial:gamekit"
   :version "0.0.1"
