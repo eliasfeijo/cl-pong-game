@@ -1,7 +1,7 @@
 ;;;; skill.lisp
 (in-package :com.eliasfeijo.pong)
 
-(defparameter +delay-red-skill+ 3.0)
+(defparameter +delay-red-skill+ 1.0)
 (defparameter +delay-green-skill+ 2.0)
 (defparameter +delay-blue-skill+ 2.5)
 
@@ -67,7 +67,7 @@
 
 (defclass red-skill (skill)
   ((size :initform (vec2 25 25))
-   (speed :initform 400)
+   (speed :initform 700)
    (fill-color :initform (vec4 1 0 0 1))))
 
 (defmethod initialize-instance :after ((this red-skill) &key)
