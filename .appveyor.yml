@@ -21,7 +21,8 @@ branches:
 
 install:
   - set PATH=C:\msys64\usr\bin\;%PATH%
-  - pacman --noconfirm -Syu zip
+  - pacman --noconfirm -Syu
+  - pacman --noconfirm -S zip
   - sh -c "curl -L http://bodge.borodust.org/files/install.sh | sh"
 
 build_script:
