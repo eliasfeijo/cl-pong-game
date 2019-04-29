@@ -39,6 +39,7 @@ before_deploy:
 
 deploy:
   provider: releases
+  api-key: $GITHUB_TOKEN
   file: $GAMEKIT_TARGET_PACKAGE
   skip_cleanup: true
   overwrite: true
